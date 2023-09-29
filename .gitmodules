@@ -4,3 +4,7 @@
 [submodule "lib/protobuf"]
 	path = lib/protobuf
 	url = https://github.com/protocolbuffers/protobuf.git
+[submodule "lib/intiface-engine"]
+	path = lib/intiface-engine
+	url = https://github.com/intiface/intiface-engine
+	branch = master
