@@ -60,7 +60,7 @@ namespace Buttplug
         const std::string& Name() const noexcept { return name; }
         bool Connected() const noexcept { return isConnected; }
 
-        uint32_t DeviceCount() const noexcept { return devices.size(); }
+        uint32_t DeviceCount() const noexcept { return static_cast<uint32_t>(devices.size()); }
 
         void HandleServerMessage(const Buttplug::ButtplugFFIServerMessage& msg);
         void HandleMsgResponse(const Buttplug::ButtplugFFIServerMessage& resp);

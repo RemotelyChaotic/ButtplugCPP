@@ -6,7 +6,7 @@ using namespace Buttplug;
 using namespace google;
 
 Device::Device(const std::string& name, Buttplug::Client* client, Buttplug::DeviceHandle deviceHandle)
-    : name(name), client(client), deviceHandle(deviceHandle)
+    : client(client), deviceHandle(deviceHandle), name(name)
 {
     arena = std::make_unique<google::protobuf::Arena>();
 }
@@ -21,7 +21,8 @@ void Device::sendMessage(Buttplug::DeviceMessage* msg)
 {
     std::string sendBuffer;
     if(msg->SerializeToString(&sendBuffer)) {
-        Buttplug::FFI::DeviceProtobufMessage(deviceHandle, (uint8_t*)sendBuffer.data(), sendBuffer.size());
+        Buttplug::FFI::DeviceProtobufMessage(deviceHandle, (uint8_t*)sendBuffer.data(),
+                                             static_cast<int>(sendBuffer.size()));
         arena->Reset(); msg = nullptr;
     }
     else {

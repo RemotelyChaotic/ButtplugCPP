@@ -3,7 +3,8 @@
 	url = https://github.com/buttplugio/buttplug-rs-ffi.git
 [submodule "lib/protobuf"]
 	path = lib/protobuf
-	url = https://github.com/protocolbuffers/protobuf.git
+	url = https://github.com/RemotelyChaotic/protobuf.git
+    branch = master
 [submodule "lib/intiface-engine"]
 	path = lib/intiface-engine
 	url = https://github.com/intiface/intiface-engine

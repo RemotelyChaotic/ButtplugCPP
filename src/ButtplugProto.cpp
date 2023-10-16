@@ -32,7 +32,8 @@ DeferredSender Protocol::SendMessage(Buttplug::ClientHandle clientHandle, Buttpl
     msg->set_id(id);
     if(msg->SerializeToString(&sendBuffer)) {
         auto send = [=]() {
-            Buttplug::FFI::ClientProtobufMessage(clientHandle, (uint8_t*)sendBuffer.data(), sendBuffer.size(), cb, ctx);
+            Buttplug::FFI::ClientProtobufMessage(clientHandle, (uint8_t*)sendBuffer.data(),
+                                                 static_cast<int>(sendBuffer.size()), cb, ctx);
         };
         arena->Reset(); msg = nullptr;
         return Buttplug::DeferredSender{id, std::move(send)};
