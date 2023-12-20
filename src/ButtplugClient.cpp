@@ -217,7 +217,7 @@ std::future<bool> Buttplug::Client::Disconnect()
 {
     if(!isConnected) return FalseFuture();
     auto sender = protocol->SendDisconnect(clientHandle, DefaultMsgCallback, this);
-    auto& result = addResponseHandler(sender.Id, [this](const ButtplugFFIServerMessage& response, std::promise<bool>& promise) {
+    auto& result = addResponseHandler(sender.Id, [](const ButtplugFFIServerMessage& response, std::promise<bool>& promise) {
         bool ok = IsOk(response);
         promise.set_value(ok);
     });
