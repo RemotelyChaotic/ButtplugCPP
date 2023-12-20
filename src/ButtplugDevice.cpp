@@ -46,6 +46,22 @@ void Device::SendLinearCmd(uint32_t durationMs, double position)
     sendMessage(msg);
 }
 
+void Device::SendRotateCmd(bool clockwise, double speed)
+{
+  auto rotateCmd = protobuf::Arena::CreateMessage<Buttplug::DeviceMessage::RotateCmd>(arena.get());
+  auto rotations = rotateCmd->add_rotations();
+  rotations->set_index(0);
+  rotations->set_clockwise(clockwise);
+  rotations->set_speed(speed);
+
+  auto ffi = protobuf::Arena::CreateMessage<Buttplug::DeviceMessage::FFIMessage>(arena.get());
+  ffi->set_allocated_rotate_cmd(rotateCmd);
+  auto msg = protobuf::Arena::CreateMessage<Buttplug::DeviceMessage>(arena.get());
+  msg->set_allocated_message(ffi);
+
+  sendMessage(msg);
+}
+
 void Device::SendVibrateCmd(double speed)
 {
     auto vibrateCmd = protobuf::Arena::CreateMessage<Buttplug::DeviceMessage::VibrateCmd>(arena.get());

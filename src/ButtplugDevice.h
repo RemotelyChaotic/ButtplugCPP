@@ -37,6 +37,7 @@ namespace Buttplug
         const std::string& Name() const noexcept { return name; }
 
         void SendLinearCmd(uint32_t durationMs, double position);
+        void SendRotateCmd(bool clockwise, double speed);
         void SendVibrateCmd(double speed);
 
     };
