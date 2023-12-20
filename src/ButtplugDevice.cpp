@@ -62,6 +62,14 @@ void Device::SendRotateCmd(bool clockwise, double speed)
   sendMessage(msg);
 }
 
+void Device::SetndStopCmd()
+{
+  auto stopCmd = protobuf::Arena::CreateMessage<Buttplug::DeviceMessage::StopDeviceCmd>(arena.get());
+
+  auto ffi = protobuf::Arena::CreateMessage<Buttplug::DeviceMessage::FFIMessage>(arena.get());
+  ffi->set_allocated_stop_device_cmd(stopCmd);
+}
+
 void Device::SendVibrateCmd(double speed)
 {
     auto vibrateCmd = protobuf::Arena::CreateMessage<Buttplug::DeviceMessage::VibrateCmd>(arena.get());

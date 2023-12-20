@@ -38,6 +38,7 @@ namespace Buttplug
 
         void SendLinearCmd(uint32_t durationMs, double position);
         void SendRotateCmd(bool clockwise, double speed);
+        void SetndStopCmd();
         void SendVibrateCmd(double speed);
 
     };
