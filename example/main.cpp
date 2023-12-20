@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 
 	// Before the client can be used the FFI functions must be loaded.
 	// If this fails the client must not be used.
-	if(!Buttplug::FFI::Init()) {
+  if(!Buttplug::FFI::Init("./")) {
 		std::cout << "Failed to load buttplug_rs_ffi functions.\n";
 		abort();
 	}

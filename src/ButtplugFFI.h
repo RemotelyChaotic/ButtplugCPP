@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <string>
 
 namespace Buttplug
 {
@@ -29,6 +30,6 @@ namespace Buttplug
 
         static Buttplug::ActivateEnvLogger ActivateEnvLogger;
 
-        static bool Init();
+        static bool Init(std::string path);
     };
 } // namespace Buttplug

@@ -14,12 +14,12 @@ Buttplug::FreeDevice FFI::FreeDevice = nullptr;
 Buttplug::DeviceProtobufMessage FFI::DeviceProtobufMessage = nullptr;
 Buttplug::ActivateEnvLogger FFI::ActivateEnvLogger = nullptr;
 
-bool FFI::Init() 
+bool FFI::Init(std::string path)
 {
     if(!ButtplugFFILib) {
         try
         {
-            ButtplugFFILib = std::make_unique<dylib>("./", "buttplug_rs_ffi");
+            ButtplugFFILib = std::make_unique<dylib>(path.c_str(), "buttplug_rs_ffi");
         }
         catch(const std::exception& e)
         {
