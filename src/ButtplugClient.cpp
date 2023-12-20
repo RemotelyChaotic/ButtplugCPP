@@ -180,6 +180,14 @@ void Buttplug::Client::HandleServerMessage(const Buttplug::ButtplugFFIServerMess
             devices.erase(it);
         }
     }
+    else if (IsDeviceEvent(msg)) {
+      if (msg.message().device_event().has_battery_level_reading()) {
+        // TODO:
+        //const auto& reading = msg.message().device_event().battery_level_reading();
+      } else if (msg.message().device_event().has_rssi_level_reading()) {
+        // TODO:
+      }
+    }
     else {
         std::cout << "msg: " << msg.DebugString() << '\n';
     }
@@ -201,6 +209,22 @@ std::future<bool> Buttplug::Client::StartScanning()
 {
     if(!isConnected) return FalseFuture();
     auto sender = protocol->SendStartScanning(clientHandle, DefaultMsgCallback, this);
+    auto& result = addResponseHandler(sender.Id, [this](const ButtplugFFIServerMessage& response, std::promise<bool>& promise) {
+        bool ok = IsOk(response);
+        promise.set_value(ok);
+
+        if(ScanningFinishedCb.has_value()) {
+            ScanningFinishedCb.value()();
+        }
+    });
+    sender.Send();
+    return result.get_future();
+}
+
+std::future<bool> Buttplug::Client::StopScanning()
+{
+    if(!isConnected) return FalseFuture();
+    auto sender = protocol->SendStopScanning(clientHandle, DefaultMsgCallback, this);
     auto& result = addResponseHandler(sender.Id, [this](const ButtplugFFIServerMessage& response, std::promise<bool>& promise) {
         bool ok = IsOk(response);
         promise.set_value(ok);

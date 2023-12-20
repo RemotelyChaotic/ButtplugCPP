@@ -74,3 +74,13 @@ DeferredSender Protocol::SendStartScanning(Buttplug::ClientHandle clientHandle, 
     msg->set_allocated_message(ffi);
     return SendMessage(clientHandle, msg, cb, ctx);
 }
+
+DeferredSender Protocol::SendStopScanning(Buttplug::ClientHandle clientHandle, Buttplug::Callback cb, void* ctx)
+{
+    auto stopScan = protobuf::Arena::CreateMessage<Buttplug::ClientMessage::StopScanning>(arena.get());
+    auto ffi = ffiMessage(arena.get());
+    ffi->set_allocated_stop_scanning(stopScan);
+    auto msg = clientMessage(arena.get());
+    msg->set_allocated_message(ffi);
+    return SendMessage(clientHandle, msg, cb, ctx);
+}

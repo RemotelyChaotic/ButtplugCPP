@@ -55,6 +55,7 @@ namespace Buttplug
 
         std::future<bool> ConnectWebsocket(const std::string& address, bool bypass_ssl);
         std::future<bool> StartScanning();
+        std::future<bool> StopScanning();
         std::future<bool> Disconnect();
 
         const std::string& Name() const noexcept { return name; }

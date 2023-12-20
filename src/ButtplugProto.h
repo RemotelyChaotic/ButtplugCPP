@@ -38,6 +38,7 @@ namespace Buttplug
         DeferredSender SendConnectWebsocket(Buttplug::ClientHandle clientHandle, const std::string& address, bool bypass_ssl, Buttplug::Callback cb, void* ctx);
         DeferredSender SendDisconnect(Buttplug::ClientHandle clienthandle, Buttplug::Callback cb, void* ctx);
         DeferredSender SendStartScanning(Buttplug::ClientHandle clientHandle, Buttplug::Callback cb, void* ctx);
+        DeferredSender SendStopScanning(Buttplug::ClientHandle clientHandle, Buttplug::Callback cb, void* ctx);
     };
 
 } // namespace Buttplug
