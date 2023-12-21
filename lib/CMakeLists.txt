@@ -2,61 +2,13 @@ add_library(dylib INTERFACE)
 target_include_directories(dylib INTERFACE "dylib/")
 
 
-#build protobuff externally
-include(ExternalProject)
+if (WIN32)
+elseif(ANDROID)
+  add_library(libprotobuf STATIC IMPORTED)
+  set_target_properties(libprotobuf PROPERTIES IMPORTED_GLOBAL TRUE)
+  add_library(libprotoc STATIC IMPORTED)
+  set_target_properties(libprotoc PROPERTIES IMPORTED_GLOBAL TRUE)
 
-# We can't build protobuf directly on android
-#if (ANDROID)
-#  list(APPEND ANDROID_PROTOBUFF_ARGS
-#    "-DANDROID_ABI:STRING=${ANDROID_ABI}"
-#    "-DANDROID_PLATFORM=${ANDROID_PLATFORM}"
-#    "-DANDROID_BUILD_ABI_arm64-v8a:BOOL=${ANDROID_BUILD_ABI_arm64}"
-#    "-DANDROID_BUILD_ABI_armeabi-v7a:BOOL=${ANDROID_BUILD_ABI_armeabi}"
-#    "-DANDROID_BUILD_ABI_x86:BOOL=${ANDROID_BUILD_ABI_x86}"
-#    "-DANDROID_BUILD_ABI_x86_64:BOOL=${ANDROID_BUILD_ABI_x86_64}"
-#    "-DANDROID_DEPLOY_QT:FILEPATH=${NDROID_DEPLOY_QT}"
-#    "-DANDROID_NATIVE_API_LEVEL:STRING=${ANDROID_NATIVE_API_LEVEL}"
-#    "-DANDROID_NDK:PATH=${ANDROID_NDK}"
-#    "-DANDROID_SDK:PATH=${ANDROID_SDK}"
-#    "-DANDROID_STL:STRING=${ANDROID_STL}"
-#    "-DCMAKE_INSTALL_LIBDIR:STRING=${CMAKE_INSTALL_LIBDIR}"
-#  )
-#endif()
-
-if (NOT ANDROID)
-  set(libPTB protobuf)
-  ExternalProject_Add(${libPTB}
-    PREFIX ${CMAKE_BINARY_DIR}/${libPTB}
-    SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/${libPTB}
-    BINARY_DIR ${CMAKE_BINARY_DIR}/${libPTB}
-    INSTALL_DIR ${CMAKE_BINARY_DIR}/${libPTB}
-    CMAKE_ARGS
-      "-DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}"
-      "-DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/${libPTB}"
-      "-DCMAKE_INSTALL_INCLUDEDIR:PATH=${CMAKE_BINARY_DIR}/${libPTB}/include"
-      "-Dprotobuf_BUILD_TESTS=OFF"
-      "-Dprotobuf_BUILD_EXAMPLES:BOOL=OFF"
-      "-Dprotobuf_INSTALL=ON"
-      "-Dprotobuf_WITH_ZLIB=OFF"
-    BUILD_BYPRODUCTS
-      ${CMAKE_BINARY_DIR}/${libPTB}/protoc${CMAKE_EXECUTABLE_SUFFIX}
-      ${CMAKE_BINARY_DIR}/${libPTB}/libprotobufd${CMAKE_STATIC_LIBRARY_SUFFIX}
-      ${CMAKE_BINARY_DIR}/${libPTB}/libprotobuf${CMAKE_STATIC_LIBRARY_SUFFIX}
-    INSTALL_BYPRODUCTS
-      ${CMAKE_BINARY_DIR}/${libPTB}/include
-    STEP_TARGETS   install
-  )
-
-  # Acquire Installation Directory of
-  ExternalProject_Get_Property(${libPTB} install_dir)
-  include_directories(${install_dir}/include)
-  link_directories(${CMAKE_CURRENT_BINARY_DIR}/${libPTB})
-endif()
-
-add_library(libprotobuf STATIC IMPORTED)
-set_target_properties(libprotobuf PROPERTIES IMPORTED_GLOBAL TRUE)
-
-if (ANDROID)
   set_target_properties(libprotobuf PROPERTIES
     IMPORTED_LINK_INTERFACE_LANGUAGES "CXX"
     IMPORTED_LOCATION "${CMAKE_CURRENT_LIST_DIR}/protobuff_android/${ANDROID_ABI}/libprotobuf.a"
@@ -68,12 +20,17 @@ if (ANDROID)
       ${CUSTOM_ANDROID_EXTRA_LIBS}
       "${CMAKE_CURRENT_LIST_DIR}/protobuff_android/${ANDROID_ABI}/libprotobuf.a"
   CACHE INTERNAL "")
-else()
-  if (${KDE_DEBUG})
-    set_target_properties (libprotobuf PROPERTIES IMPORTED_LOCATION
-      ${install_dir}/libprotobufd${CMAKE_STATIC_LIBRARY_SUFFIX})
-  else()
-    set_target_properties (libprotobuf PROPERTIES IMPORTED_LOCATION
-      ${install_dir}/libprotobuf${CMAKE_STATIC_LIBRARY_SUFFIX})
-  endif()
+
+  set_target_properties(libprotoc PROPERTIES
+    IMPORTED_LINK_INTERFACE_LANGUAGES "CXX"
+    IMPORTED_LOCATION "${CMAKE_CURRENT_LIST_DIR}/protobuff_android/${ANDROID_ABI}/libprotoc.a"
+    INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/protobuff_android/include"
+    IMPORTED_GLOBAL TRUE
+  )
+
+  set(CUSTOM_ANDROID_EXTRA_LIBS
+      ${CUSTOM_ANDROID_EXTRA_LIBS}
+      "${CMAKE_CURRENT_LIST_DIR}/protobuff_android/${ANDROID_ABI}/libprotoc.a"
+  CACHE INTERNAL "")
 endif()
+
